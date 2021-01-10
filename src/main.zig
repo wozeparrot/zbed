@@ -27,19 +27,26 @@ fn delay(ms: u8) void {
 }
 
 pub fn main() !void {
-    var led_frame = async runLed();
-    await led_frame;
+    // var led_frame = async runLed();
+    // await led_frame;
+    var now = io.millis();
+    while (true) {
+        if (io.millis() - now >= 200) {
+            pin.write(!pin.read());
+            now = io.millis();
+        }
+    }
 }
 
 fn runLed() void {
-    while (true) {
-        pin.write(true);
-        EventLoop.waitFor(.{
-            .time = io.millis() + 100,
-        });
-        pin.write(false);
-        EventLoop.waitFor(.{
-            .time = io.millis() + 100,
-        });
-    }
+    // while (true) {
+    //     pin.write(true);
+    //     EventLoop.waitFor(.{
+    //         .time = io.millis() + 100,
+    //     });
+    //     pin.write(false);
+    //     EventLoop.waitFor(.{
+    //         .time = io.millis() + 100,
+    //     });
+    // }
 }

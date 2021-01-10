@@ -17,7 +17,7 @@ pub fn millis() u32 {
 }
 
 // timer0 overflow interrupt
-export fn __vector_23() void {
+export fn __vector_23() callconv(.Signal) void {
     timer0_millis += util.clockCyclesToMicroseconds(64 * 256) / 1000;
     timer0_fract += (util.clockCyclesToMicroseconds(64 * 256) % 1000) >> 3;
     if (timer0_fract >= 125) {

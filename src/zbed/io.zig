@@ -66,7 +66,7 @@ pub const DigitalPin = struct {
     pub fn read(self: *DigitalPin) bool {
         const pin = pinPinRegister(self.pin);
         const mask = pinMask(self.pin);
-        return pin.* & mask;
+        return if (pin.* & mask == 1) true else false;
     }
 };
 

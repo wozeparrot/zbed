@@ -18,7 +18,7 @@ pub fn build(b: *Builder) !void {
     switch (target.cpu_arch.?) {
         .avr => {
             const run_build = b.addSystemCommand(&[_][]const u8{
-                "zig", "build-obj", "-femit-asm", "-target", target_string, "-mcpu", target.cpu_model.explicit.name,
+                "zig", "build-obj", "-femit-asm", "-target", target_string, "-mcpu", target.cpu_model.explicit.name, "-OReleaseSmall",
                 "../src/main.zig"
             });
             run_build.cwd = "zig-cache";
