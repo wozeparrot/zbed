@@ -1,0 +1,3 @@
+[submodule "deps/ArduinoCore-avr"]
+	path = deps/ArduinoCore-avr
+	url = git://github.com/arduino/ArduinoCore-avr.git

@@ -1,0 +1,16 @@
+pub fn Wrapper(comptime Condition: type) type {
+    return struct {
+        pub usingnamespace @import("zbed.zig");
+        pub const EventLoop = event.Loop(Condition, 64);
+
+        export fn main() noreturn {
+            io.init();
+
+            var frame = async @import("root").main();
+            EventLoop.run();
+            nosuspend await frame catch unreachable; // error
+
+            while (true) {}
+        }
+    };
+}
