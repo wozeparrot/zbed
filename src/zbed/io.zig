@@ -68,6 +68,18 @@ pub const DigitalPin = struct {
         const mask = pinMask(self.pin);
         return if (pin.* & mask == 1) true else false;
     }
+
+    /// Xors the pin
+    pub fn toggle(self: *DigitalPin) void {
+        const oldSREG = SREG.*;
+        util.cli();
+
+        const port = pinPortRegister(self.pin);
+        const mask = pinMask(self.pin);
+        port.* ^= mask;
+
+        SREG.* = oldSREG;
+    }
 };
 
 /// Initializes the IO

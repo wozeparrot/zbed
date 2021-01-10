@@ -28,6 +28,8 @@ export fn __vector_23() callconv(.Signal) void {
     timer0_overflow_count += 1;
 }
 
+/// Inits public io api
+/// timer0
 pub fn pub_io_init() void {
     util.sei();
 

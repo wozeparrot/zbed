@@ -32,7 +32,7 @@ pub fn main() !void {
     var now = io.millis();
     while (true) {
         if (io.millis() - now >= 200) {
-            pin.write(!pin.read());
+            pin.toggle();
             now = io.millis();
         }
     }
