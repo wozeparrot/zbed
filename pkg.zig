@@ -13,9 +13,7 @@ pub fn Pkg(path: comptime []const u8) type {
         };
 
         /// Adds zbed to a step
-        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep) void {
-            const io_target = b.option([]const u8, "io", "sets io target (required)") orelse @panic("io target required!");
-
+        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep, io_target: []const u8) void {
             zbed.dependencies = &[_]std.build.Pkg{.{
                 .name = "build_options",
                 .path = std.mem.concat(step.builder.allocator, u8, &[_][]const u8{ "zig-cache/", step.name, "_build_options.zig" }) catch unreachable,

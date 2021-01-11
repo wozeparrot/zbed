@@ -8,6 +8,7 @@ pub fn build(b: *Builder) !void {
     const mode = b.standardReleaseOptions();
     const cpu_name = b.option([]const u8, "cpu", "sets target cpu");
     if (cpu_name) |name| target.cpu_model = .{ .explicit = try target.getCpuArch().parseCpuModel(name) };
+    const io_target = b.option([]const u8, "io", "sets io target (required)") orelse @panic("io target required!");
 
     var examples_dir = try std.fs.cwd().openDir("examples", .{ .iterate = true });
     defer examples_dir.close();
@@ -21,7 +22,7 @@ pub fn build(b: *Builder) !void {
                     const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
 
                     // add zbed
-                    zbed.addTo(b, obj);
+                    zbed.addTo(b, obj, io_target);
 
                     obj.setTarget(target);
                     obj.setBuildMode(mode);
@@ -42,7 +43,7 @@ pub fn build(b: *Builder) !void {
                     const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
                     
                     // add zbed
-                    zbed.addTo(b, exe);
+                    zbed.addTo(b, exe, io_target);
 
                     exe.setTarget(target);
                     exe.setBuildMode(mode);
