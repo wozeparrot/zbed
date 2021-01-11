@@ -13,6 +13,7 @@ pub fn millis() u32 {
     const m = timer0_millis;
 
     io.SREG.* = oldSREG;
+    cutil.sei();
 
     return m;
 }
@@ -32,8 +33,10 @@ export fn __vector_23() callconv(.Signal) void {
 /// Inits public io api
 /// timer0
 pub fn pub_io_init() void {
-    cutil.sei();
+    cutil.cli();
 
-    util.mmio8(0x25 + 0x20).* |= 0b00000011;
-    util.mmio8(0x6E).* |= 0b000000001;
+    util.mmio8(0x25 + 0x20).* = 0b00000011;
+    util.mmio8(0x6E).* = 0b000000001;
+
+    cutil.sei();
 }
