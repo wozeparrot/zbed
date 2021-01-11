@@ -14,12 +14,10 @@ var pin = io.DigitalPin.init(5, .out);
 
 // main
 pub fn main() !void {
-    // TODO: broken on avr
     var led_frame = async runLed();
     await led_frame;
 }
 
-// TODO: broken on avr
 fn runLed() void {
     while (true) {
         pin.write(true);
