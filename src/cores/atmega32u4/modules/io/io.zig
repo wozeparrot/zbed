@@ -1,4 +1,4 @@
-const util = @import("../util.zig");
+const util = @import("../../../../modules/io/util.zig");
 
 // pin defines
 const B0 = 11;

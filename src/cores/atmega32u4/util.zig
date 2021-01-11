@@ -1,4 +1,4 @@
-const io = @import("io.zig");
+const io = @import("modules/io/io.zig");
 
 pub inline fn cli() void {
     asm volatile (

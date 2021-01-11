@@ -1,5 +1,6 @@
-const util = @import("../util.zig");
-const cutil = @import("util.zig");
+const ioutil = @import("../../../../modules/io/util.zig");
+const cutil = @import("../../util.zig");
+const util = @import("../../../../util.zig");
 const io = @import("io.zig");
 
 var timer0_overflow_count: u32 = 0;
@@ -35,8 +36,8 @@ export fn __vector_23() callconv(.Signal) void {
 pub fn pub_io_init() void {
     cutil.cli();
 
-    util.mmio8(0x25 + 0x20).* = 0b00000011;
-    util.mmio8(0x6E).* = 0b000000001;
+    ioutil.mmio8(0x25 + 0x20).* = 0b00000011;
+    ioutil.mmio8(0x6E).* = 0b000000001;
 
     cutil.sei();
 }
