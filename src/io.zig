@@ -53,7 +53,7 @@ pub const DigitalPin = struct {
     /// Writes `state` to the pin
     pub fn write(self: *DigitalPin, state: bool) void {
         const oldSREG = SREG.*;
-        util.cli();
+        cutil.cli();
 
         const port = pinPortRegister(self.pin);
         const mask = pinMask(self.pin);
@@ -72,7 +72,7 @@ pub const DigitalPin = struct {
     /// Xors the pin
     pub fn toggle(self: *DigitalPin) void {
         const oldSREG = SREG.*;
-        util.cli();
+        cutil.cli();
 
         const port = pinPortRegister(self.pin);
         const mask = pinMask(self.pin);
@@ -89,5 +89,6 @@ pub fn init() void {
 }
 
 // comptime import trickery
+const cutil = @import(builtin.cpu.model.name ++ "/util.zig");
 usingnamespace @import(builtin.cpu.model.name ++ "/io.zig");
 pub usingnamespace @import(builtin.cpu.model.name ++ "/pub_io.zig");

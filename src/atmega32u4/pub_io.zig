@@ -1,4 +1,5 @@
 const util = @import("../util.zig");
+const cutil = @import("util.zig");
 const io = @import("io.zig");
 
 var timer0_overflow_count: u32 = 0;
@@ -7,7 +8,7 @@ var timer0_fract: u32 = 0;
 
 pub fn millis() u32 {
     const oldSREG = io.SREG.*;
-    util.cli();
+    cutil.cli();
 
     const m = timer0_millis;
 
@@ -31,7 +32,7 @@ export fn __vector_23() callconv(.Signal) void {
 /// Inits public io api
 /// timer0
 pub fn pub_io_init() void {
-    util.sei();
+    cutil.sei();
 
     util.mmio8(0x25 + 0x20).* |= 0b00000011;
     util.mmio8(0x6E).* |= 0b000000001;

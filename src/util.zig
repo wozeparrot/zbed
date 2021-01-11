@@ -12,18 +12,6 @@ pub inline fn mmio32(addr: usize) *volatile u32 {
     return @intToPtr(*volatile u32, addr);
 }
 
-pub inline fn cli() void {
-    asm volatile (
-        "cli" ::: "memory"
-    );
-}
-
-pub inline fn sei() void {
-    asm volatile (
-        "sei" ::: "memory"
-    );
-}
-
 pub fn clockCyclesPerMicrosecond() comptime_int {
     return F_CPU / 1000000;
 }
