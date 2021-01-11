@@ -4,7 +4,7 @@ pub fn Wrapper(comptime Condition: type) type {
         pub const EventLoop = event.Loop(Condition, 64);
 
         export fn main() void {
-            io.init();
+            io.init(EventLoop);
 
             var frame = async @import("root").main();
             EventLoop.run();

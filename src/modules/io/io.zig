@@ -3,7 +3,8 @@ const builtin = @import("builtin");
 
 pub const util = @import("util.zig");
 
-/// A DigitalPin, similar to arduino's digitalWrite and digitalRead
+// TODO: move to chip specific code
+/// a DigitalPin, similar to arduino's digitalWrite and digitalRead
 pub const DigitalPin = struct {
     /// DigitalPin mode, similar to arduino's pinMode
     pub const Mode = enum {
@@ -15,7 +16,7 @@ pub const DigitalPin = struct {
     pin: u8,
     m: Mode,
 
-    /// Returns a DigitalPin object
+    /// returns a DigitalPin object
     pub fn init(pin: u8, m: Mode) DigitalPin {
         return DigitalPin{
             .pin = pin,
@@ -23,16 +24,15 @@ pub const DigitalPin = struct {
         };
     }
 
-    /// Sets the pin mode
+    /// sets the pin mode
     pub fn mode(self: *DigitalPin, m: Mode) void {
         self.m = m;
 
-        const oldSREG = SREG.*;
         cutil.cli();
 
-        const ddr = pinModeRegister(self.pin);
-        const port = pinPortRegister(self.pin);
-        const mask = pinMask(self.pin);
+        const ddr = c.pinModeRegister(self.pin);
+        const port = c.pinPortRegister(self.pin);
+        const mask = c.pinMask(self.pin);
         switch (m) {
             .in => {
                 ddr.* &= ~mask;
@@ -47,48 +47,47 @@ pub const DigitalPin = struct {
             },
         }
 
-        SREG.* = oldSREG;
+        cutil.sei();
     }
 
-    /// Writes `state` to the pin
+    /// writes `state` to the pin
     pub fn write(self: *DigitalPin, state: bool) void {
-        const oldSREG = SREG.*;
         cutil.cli();
 
-        const port = pinPortRegister(self.pin);
-        const mask = pinMask(self.pin);
+        const port = c.pinPortRegister(self.pin);
+        const mask = c.pinMask(self.pin);
         if (state) port.* |= mask else port.* &= ~mask;
 
-        SREG.* = oldSREG;
+        cutil.sei();
     }
 
-    /// Read from the pin
+    /// reads from the pin
     pub fn read(self: *DigitalPin) bool {
-        const pin = pinPinRegister(self.pin);
-        const mask = pinMask(self.pin);
+        const pin = c.pinPinRegister(self.pin);
+        const mask = c.pinMask(self.pin);
         return if (pin.* & mask == 1) true else false;
     }
 
-    /// Xors the pin
+    /// xors the pin
     pub fn toggle(self: *DigitalPin) void {
-        const oldSREG = SREG.*;
         cutil.cli();
 
-        const port = pinPortRegister(self.pin);
-        const mask = pinMask(self.pin);
+        const port = c.pinPortRegister(self.pin);
+        const mask = c.pinMask(self.pin);
         port.* ^= mask;
 
-        SREG.* = oldSREG;
+        cutil.sei();
     }
 };
 
-/// Initializes the IO
-pub fn init() void {
-    io_init();
-    pub_io_init();
-}
+/// returns milliseconds since start
+pub const millis = c.millis;
+
+/// initializes the io
+pub const init = c.io_init;
 
 // comptime import trickery
+/// chip utils
 const cutil = @import("../../cores/" ++ @import("build_options").io_target ++ "/util.zig");
-usingnamespace @import("../../cores/" ++ @import("build_options").io_target ++ "/modules/io/io.zig");
-pub usingnamespace @import("../../cores/" ++ @import("build_options").io_target ++ "/modules/io/pub_io.zig");
+/// chip specific io
+pub const c = @import("../../cores/" ++ @import("build_options").io_target ++ "/modules/io/io.zig");

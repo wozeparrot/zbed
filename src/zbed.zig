@@ -1,4 +1,5 @@
 pub const io = @import("modules/io/io.zig");
+pub const usb = @import("modules/usb/usb.zig");
 pub const util = @import("util.zig");
 pub const event = @import("event.zig");
 

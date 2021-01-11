@@ -5,12 +5,14 @@ usingnamespace @import("zbed_wrapper").Wrapper(union(enum) {
     time: u32,
 
     pub fn done(self: @This()) bool {
-        return io.millis() >= self.time;
+        switch (self) {
+            .time => return io.millis() >= self.time,
+        }
     }
 });
 
 // init a pin
-var pin = io.DigitalPin.init(5, .out);
+var pin = io.DigitalPin.init(io.c.C6, .out);
 
 // main
 pub fn main() !void {
