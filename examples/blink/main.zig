@@ -15,17 +15,8 @@ var pin = io.DigitalPin.init(5, .out);
 // main
 pub fn main() !void {
     // TODO: broken on avr
-    // var led_frame = async runLed();
-    // await led_frame;
-
-    // toggle pin every 200 ms
-    var now = io.millis();
-    while (true) {
-        if (io.millis() - now >= 200) {
-            pin.toggle();
-            now = io.millis();
-        }
-    }
+    var led_frame = async runLed();
+    await led_frame;
 }
 
 // TODO: broken on avr
