@@ -89,6 +89,6 @@ pub fn init() void {
 }
 
 // comptime import trickery
-const cutil = @import(builtin.cpu.model.name ++ "/util.zig");
-usingnamespace @import(builtin.cpu.model.name ++ "/io.zig");
-pub usingnamespace @import(builtin.cpu.model.name ++ "/pub_io.zig");
+const cutil = @import(@import("build_options").io_target ++ "/util.zig");
+usingnamespace @import(@import("build_options").io_target ++ "/io.zig");
+pub usingnamespace @import(@import("build_options").io_target ++ "/pub_io.zig");

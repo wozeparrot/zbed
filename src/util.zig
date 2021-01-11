@@ -25,4 +25,4 @@ pub inline fn microsecondsToClockCycles(micros: u32) u32 {
 }
 
 // comptime import trickery
-usingnamespace @import(builtin.cpu.model.name ++ "/constants.zig");
+usingnamespace @import(@import("build_options").io_target ++ "/constants.zig");

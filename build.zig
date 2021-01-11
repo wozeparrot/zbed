@@ -1,24 +1,13 @@
 const std = @import("std");
 const Builder = std.build.Builder;
 
-const zbed = std.build.Pkg{
-    .name = "zbed",
-    .path = "src/zbed.zig",
-};
-const zbed_wrapper = std.build.Pkg{
-    .name = "zbed_wrapper",
-    .path = "src/wrapper.zig",
-};
+const zbed = @import("pkg.zig").Pkg(".");
 
 pub fn build(b: *Builder) !void {
     var target = b.standardTargetOptions(.{});
     const mode = b.standardReleaseOptions();
-
-    const cpu_name = b.option([]const u8, "cpu", "sets target cpu (required)");
+    const cpu_name = b.option([]const u8, "cpu", "sets target cpu");
     if (cpu_name) |name| target.cpu_model = .{ .explicit = try target.getCpuArch().parseCpuModel(name) };
-
-    const target_string = try target.zigTriple(b.allocator);
-    defer b.allocator.free(target_string);
 
     var examples_dir = try std.fs.cwd().openDir("examples", .{ .iterate = true });
     defer examples_dir.close();
@@ -27,16 +16,21 @@ pub fn build(b: *Builder) !void {
     while (try it.next()) |entry| {
         if (entry.kind == .Directory) {
             switch (target.getCpuArch()) {
+                // lld cannot link avr yet so special case
                 .avr => {
                     const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
-                    obj.setOutputDir("zig-cache/");
+
+                    // add zbed
+                    zbed.addTo(b, obj);
+
                     obj.setTarget(target);
                     obj.setBuildMode(mode);
-                    obj.addPackage(zbed);
-                    obj.addPackage(zbed_wrapper);
 
+                    obj.setOutputDir("zig-cache/");
+
+                    // use avr-gcc to link
                     const run_link = b.addSystemCommand(&[_][]const u8{
-                        "avr-gcc", try std.mem.concat(b.allocator, u8, &[_][]const u8{"-mmcu=", target.cpu_model.explicit.name}),
+                        "avr-gcc", try std.mem.concat(b.allocator, u8, &[_][]const u8{"-mmcu=", obj.target.getCpuModel().name}),
                         std.os.getenv("AVR_FLAGS").?, obj.getOutputPath(), "-o",
                         try std.fs.path.join(b.allocator, &[_][]const u8{"zig-cache", try std.mem.concat(b.allocator, u8, &[_][]const u8{entry.name, ".elf"})})
                     });
@@ -46,11 +40,14 @@ pub fn build(b: *Builder) !void {
                 },
                 else => {
                     const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
-                    exe.setOutputDir("zig-cache/");
+                    
+                    // add zbed
+                    zbed.addTo(b, exe);
+
                     exe.setTarget(target);
                     exe.setBuildMode(mode);
-                    exe.addPackage(zbed);
-                    exe.addPackage(zbed_wrapper);
+
+                    exe.setOutputDir("zig-cache/");
 
                     b.default_step.dependOn(&exe.step);
                 },

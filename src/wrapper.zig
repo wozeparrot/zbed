@@ -1,6 +1,6 @@
 pub fn Wrapper(comptime Condition: type) type {
     return struct {
-        pub usingnamespace @import("zbed.zig");
+        pub usingnamespace @import("zbed");
         pub const EventLoop = event.Loop(Condition, 64);
 
         export fn main() noreturn {
