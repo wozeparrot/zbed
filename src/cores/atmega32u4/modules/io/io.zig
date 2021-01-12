@@ -108,7 +108,7 @@ export fn __vector_23() callconv(.Signal) void {
 
 /// inits io api:
 /// timer0
-pub fn io_init(comptime EventLoop: type) void {
+pub fn io_init() void {
     cutil.cli();
 
     ioutil.mmio8(0x25 + 0x20).* = 0b00000011;

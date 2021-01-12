@@ -2,7 +2,7 @@ const io = @import("../io/io.zig");
 const cutil = @import("../../util.zig");
 const ioutil = @import("../../../../modules/io/util.zig");
 
-pub fn usb_init(comptime EventLoop: type) void {
+pub fn usb_init() void {
     cutil.cli();
 
     // usb pads regulator
