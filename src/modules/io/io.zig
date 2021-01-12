@@ -3,7 +3,6 @@ const builtin = @import("builtin");
 
 pub const util = @import("util.zig");
 
-// TODO: move to chip specific code
 /// a DigitalPin, similar to arduino's digitalWrite and digitalRead
 pub const DigitalPin = struct {
     /// DigitalPin mode, similar to arduino's pinMode
@@ -28,7 +27,7 @@ pub const DigitalPin = struct {
     pub fn mode(self: *DigitalPin, m: Mode) void {
         self.m = m;
 
-        cutil.cli();
+        cutil.enterCritical();
 
         const ddr = c.pinModeRegister(self.pin);
         const port = c.pinPortRegister(self.pin);
@@ -47,18 +46,18 @@ pub const DigitalPin = struct {
             },
         }
 
-        cutil.sei();
+        cutil.exitCritical();
     }
 
     /// writes `state` to the pin
     pub fn write(self: *DigitalPin, state: bool) void {
-        cutil.cli();
+        cutil.enterCritical();
 
         const port = c.pinPortRegister(self.pin);
         const mask = c.pinMask(self.pin);
         if (state) port.* |= mask else port.* &= ~mask;
 
-        cutil.sei();
+        cutil.exitCritical();
     }
 
     /// reads from the pin
@@ -70,13 +69,13 @@ pub const DigitalPin = struct {
 
     /// xors the pin
     pub fn toggle(self: *DigitalPin) void {
-        cutil.cli();
+        cutil.enterCritical();
 
         const port = c.pinPortRegister(self.pin);
         const mask = c.pinMask(self.pin);
         port.* ^= mask;
 
-        cutil.sei();
+        cutil.exitCritical();
     }
 };
 

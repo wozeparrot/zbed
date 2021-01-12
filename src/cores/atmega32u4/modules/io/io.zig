@@ -85,11 +85,11 @@ var timer0_millis: u32 = 0;
 var timer0_fract: u32 = 0;
 
 pub fn millis() u32 {
-    cutil.cli();
+    cutil.enterCritical();
 
     const m = timer0_millis;
 
-    cutil.sei();
+    cutil.exitCritical();
 
     return m;
 }
@@ -109,10 +109,10 @@ export fn __vector_23() callconv(.Signal) void {
 /// inits io api:
 /// timer0
 pub fn io_init() void {
-    cutil.cli();
+    cutil.enterCritical();
 
     ioutil.mmio8(0x25 + 0x20).* = 0b00000011;
     ioutil.mmio8(0x6E).* = 0b000000001;
 
-    cutil.sei();
+    cutil.exitCritical();
 }

@@ -3,7 +3,7 @@ const cutil = @import("../../util.zig");
 const ioutil = @import("../../../../modules/io/util.zig");
 
 pub fn usb_init() void {
-    cutil.cli();
+    cutil.enterCritical();
 
     // usb pads regulator
     ioutil.mmio8(0xD7).* |= 0b00000001;
@@ -28,5 +28,5 @@ pub fn usb_init() void {
     // enable end of reset interrupt
     ioutil.mmio8(0xE2).* |= 0b00001000 | 0b00000100;
 
-    cutil.sei();
+    cutil.exitCritical();
 }
