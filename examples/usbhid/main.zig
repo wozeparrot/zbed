@@ -2,12 +2,10 @@ const std = @import("std");
 
 // use main wrapper
 usingnamespace @import("zbed_wrapper").Wrapper(union(enum) {
-    usb_init_0: void,
-
+    time: u32,
+    
     pub fn done(self: @This()) bool {
-        switch (self) {
-            .usb_init_0 => return usb.c.done_USBInit0(),
-        }
+        return true;
     }
 });
 
