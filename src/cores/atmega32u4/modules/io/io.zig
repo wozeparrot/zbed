@@ -84,6 +84,7 @@ var timer0_overflow_count: u32 = 0;
 var timer0_millis: u32 = 0;
 var timer0_fract: u32 = 0;
 
+/// returns the number of milliseconds that passed since start
 pub fn millis() u32 {
     cutil.enterCritical();
 
