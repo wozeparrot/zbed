@@ -6,8 +6,7 @@ const zbed = @import("pkg.zig").Pkg(".");
 pub fn build(b: *Builder) !void {
     var target = b.standardTargetOptions(.{});
     const mode = b.standardReleaseOptions();
-    const cpu_name = b.option([]const u8, "cpu", "sets target cpu");
-    if (cpu_name) |name| target.cpu_model = .{ .explicit = try target.getCpuArch().parseCpuModel(name) };
+    // const board_name = b.option([]const u8, "board", "sets target board"); // TODO: handle boards
     const io_target = b.option([]const u8, "io", "sets io target (required)") orelse @panic("io target required!");
 
     var examples_dir = try std.fs.cwd().openDir("examples", .{ .iterate = true });

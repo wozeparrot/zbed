@@ -11,6 +11,7 @@ pub fn usb_init() void {
     // set pll to use 16 mhz
     ioutil.mmio8(0x29 + 0x20).* |= 0b00010010;
 
+    // wait
     while (ioutil.mmio8(0x29 + 0x20).* & 0b00000001 != 0) {}
 
     // enable usb controller and usb power

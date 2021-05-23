@@ -4,11 +4,11 @@ pub fn clockCyclesPerMicrosecond() comptime_int {
     return F_CPU / 1000000;
 }
 
-pub inline fn clockCyclesToMicroseconds(cycles: u32) u32 {
+pub fn clockCyclesToMicroseconds(cycles: u32) callconv(.Inline) u32 {
     return cycles / clockCyclesPerMicrosecond();
 }
 
-pub inline fn microsecondsToClockCycles(micros: u32) u32 {
+pub fn microsecondsToClockCycles(micros: u32) callconv(.Inline) u32 {
     return micros * clockCyclesPerMicrosecond();
 }
 

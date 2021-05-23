@@ -1,12 +1,12 @@
 const io = @import("modules/io/io.zig");
 
-pub inline fn enterCritical() void {
+pub fn enterCritical() callconv(.Inline) void {
     asm volatile (
         "cli" ::: "memory"
     );
 }
 
-pub inline fn exitCritical() void {
+pub fn exitCritical() callconv(.Inline) void {
     asm volatile (
         "sei" ::: "memory"
     );

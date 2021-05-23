@@ -47,15 +47,16 @@ let
 in
 pkgs.mkShell {
   buildInputs = [
-    pkgsCross.avr.buildPackages.gcc
-    pkgsCross.avr.buildPackages.binutils
-    avrlibc
-    simavr
+    # pkgsCross.avr.buildPackages.gcc
+    # pkgsCross.avr.buildPackages.binutils
+    # avrlibc
+    zig
+    # simavr
 
     fish
   ];
 
-  AVR_FLAGS = avr_flags;
+  # AVR_FLAGS = avr_flags;
 
   shellHook = ''
     unset NIX_TARGET_CFLAGS_COMPILE
