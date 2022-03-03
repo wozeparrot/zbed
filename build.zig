@@ -18,7 +18,7 @@ pub fn build(b: *Builder) !void {
             switch (target.getCpuArch()) {
                 // lld cannot link avr yet so special case
                 .avr => {
-                    const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
+                    const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
 
                     // add zbed
                     zbed.addTo(b, obj, io_target);
@@ -29,18 +29,19 @@ pub fn build(b: *Builder) !void {
                     obj.setOutputDir("zig-cache/");
 
                     // use avr-gcc to link
-                    const run_link = b.addSystemCommand(&[_][]const u8{
-                        "avr-gcc", try std.mem.concat(b.allocator, u8, &[_][]const u8{"-mmcu=", obj.target.getCpuModel().name}),
-                        std.os.getenv("AVR_FLAGS").?, obj.getOutputPath(), "-o",
-                        try std.fs.path.join(b.allocator, &[_][]const u8{"zig-cache", try std.mem.concat(b.allocator, u8, &[_][]const u8{entry.name, ".elf"})})
-                    });
-                    run_link.step.dependOn(&obj.step);
+                    //const run_link = b.addSystemCommand(&[_][]const u8{
+                    //    "avr-gcc", try std.mem.concat(b.allocator, u8, &[_][]const u8{"-mmcu=", obj.target.getCpuModel().name}),
+                    //    std.os.getenv("AVR_FLAGS").?, obj.getOutputPath(), "-o",
+                    //    try std.fs.path.join(b.allocator, &[_][]const u8{"zig-cache", try std.mem.concat(b.allocator, u8, &[_][]const u8{entry.name, ".elf"})})
+                    //});
+                    //run_link.step.dependOn(&obj.step);
 
-                    b.default_step.dependOn(&run_link.step);
+                    //b.default_step.dependOn(&run_link.step);
+                    b.default_step.dependOn(&obj.step);
                 },
                 else => {
-                    const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{"examples", entry.name, "main.zig"}));
-                    
+                    const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
+
                     // add zbed
                     zbed.addTo(b, exe, io_target);
 

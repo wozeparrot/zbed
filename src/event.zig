@@ -76,11 +76,11 @@ fn testFn(comptime EventLoop: type, start: i64) !void {
 
 fn testAsyncFn(comptime EventLoop: type, name: []const u8, start: i64, offset: i64) void {
     EventLoop.waitFor(.{
-        .time = std.time.milliTimestamp() + 200 - offset,
+        .time = std.time.milliTimestamp() + offset,
     });
-    std.debug.print("\n[{}] Now: {}\n", .{name, std.time.milliTimestamp() - start});
+    std.debug.print("\n[{s}] Now: {any}\n", .{name, std.time.milliTimestamp() - start});
     EventLoop.waitFor(.{
-        .time = std.time.milliTimestamp() + 200 + offset * 2,
+        .time = std.time.milliTimestamp() + offset,
     });
-    std.debug.print("\n[{}] Now: {}\n", .{name, std.time.milliTimestamp() - start});
+    std.debug.print("\n[{s}] Now: {any}\n", .{name, std.time.milliTimestamp() - start});
 }
