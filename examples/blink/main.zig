@@ -1,34 +1,29 @@
 const std = @import("std");
 
-// use main wrapper
-usingnamespace @import("zbed_wrapper").Wrapper(union(enum) {
-    time: u32,
+const zbed = @import("zbed");
+const io = zbed.io;
 
-    pub fn done(self: @This()) bool {
-        switch (self) {
-            .time => return io.millis() >= self.time,
-        }
-    }
-});
+const EventLoop = zbed.event.Loop(64);
 
 // init a pin
 var pin = io.DigitalPin.init(io.c.C6, .out);
 
 // main
-pub fn main() !void {
+export fn main() void {
     var led_frame = async runLed();
-    await led_frame;
+    nosuspend await led_frame;
 }
 
 fn runLed() void {
     while (true) {
         pin.write(true);
-        EventLoop.waitFor(.{
-            .time = io.millis() + 100,
-        });
+        EventLoop.waitFor(@ptrCast(*anyopaque, &(io.millis() + 100)), &tillTime);
         pin.write(false);
-        EventLoop.waitFor(.{
-            .time = io.millis() + 100,
-        });
+        EventLoop.waitFor(@ptrCast(*anyopaque, &(io.millis() + 100)), &tillTime);
     }
+}
+
+fn tillTime(ctx: ?*anyopaque) bool {
+    const time = @ptrCast(*u32, @alignCast(@alignOf(*u32), ctx.?)).*;
+    return io.millis() >= time;
 }

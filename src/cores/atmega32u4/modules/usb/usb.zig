@@ -1,8 +1,8 @@
 const io = @import("../io/io.zig");
 const cutil = @import("../../util.zig");
-const ioutil = @import("../../../../modules/io/util.zig");
+const ioutil = @import("zbed").io.util;
 
-pub fn usb_init() void {
+pub fn usbInit() void {
     cutil.enterCritical();
 
     // usb pads regulator

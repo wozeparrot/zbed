@@ -1,6 +1,6 @@
-const ioutil = @import("../../../../modules/io/util.zig");
+const ioutil = @import("zbed").io.util;
 const cutil = @import("../../util.zig");
-const util = @import("../../../../util.zig");
+const util = @import("zbed").util;
 
 // pin defines (mostly arduino compatible)
 pub const B0 = 11;
@@ -109,7 +109,7 @@ export fn __vector_23() callconv(.Signal) void {
 
 /// inits io api:
 /// timer0
-pub fn io_init() void {
+pub fn ioInit() void {
     cutil.enterCritical();
 
     ioutil.mmio8(0x25 + 0x20).* = 0b00000011;

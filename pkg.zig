@@ -1,30 +1,28 @@
 const std = @import("std");
 
-pub fn Pkg(path: []const u8) type {
+pub fn Pkg(comptime path: []const u8) type {
     return struct {
         var zbed = std.build.Pkg{
             .name = "zbed",
-            .path = .{ .path = path ++ "/src/zbed.zig" },
-        };
-
-        var wrapper = std.build.Pkg{
-            .name = "zbed_wrapper",
-            .path = .{ .path = path ++ "/src/wrapper.zig" },
+            .source = .{ .path = path ++ "/src/zbed.zig" },
         };
 
         /// Adds zbed to a step
-        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep, io_target: []const u8) void {
-            _ = b;
+        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep, io_target: []const u8) !void {
+            zbed.dependencies = &[_]std.build.Pkg{
+                std.build.Pkg{
+                    .name = "zbed_io_target",
+                    .source = .{ .path = try std.mem.join(b.allocator, "", &[_][]const u8{ path, "/src/cores/", io_target, "/core.zig" }) },
+                    .dependencies = &[_]std.build.Pkg{
+                        std.build.Pkg{
+                            .name = "zbed",
+                            .source = .{ .path = path ++ "/src/zbed.zig" },
+                        },
+                    },
+                },
+            };
 
-            zbed.dependencies = &[_]std.build.Pkg{.{
-                .name = "build_options",
-                .path = .{ .path = std.mem.concat(step.builder.allocator, u8, &[_][]const u8{ "zig-cache/", step.name, "_build_options.zig" }) catch unreachable },
-            }};
-            wrapper.dependencies = &[_]std.build.Pkg{zbed};
             step.addPackage(zbed);
-            step.addPackage(wrapper);
-
-            step.addBuildOption([]const u8, "io_target", io_target);
         }
     };
 }

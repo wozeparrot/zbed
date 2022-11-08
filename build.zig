@@ -9,7 +9,7 @@ pub fn build(b: *Builder) !void {
     // const board_name = b.option([]const u8, "board", "sets target board"); // TODO: handle boards
     const io_target = b.option([]const u8, "io", "sets io target (required)") orelse @panic("io target required!");
 
-    var examples_dir = try std.fs.cwd().openDir("examples", .{ .iterate = true });
+    var examples_dir = try std.fs.cwd().openIterableDir("examples", .{});
     defer examples_dir.close();
 
     var it = examples_dir.iterate();
@@ -21,34 +21,48 @@ pub fn build(b: *Builder) !void {
                     const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
 
                     // add zbed
-                    zbed.addTo(b, obj, io_target);
+                    try zbed.addTo(b, obj, io_target);
 
                     obj.setTarget(target);
                     obj.setBuildMode(mode);
+                    obj.use_stage1 = true;
 
-                    obj.setOutputDir("zig-cache/");
+                    obj.setOutputDir("zig-out/");
 
                     // use avr-gcc to link
-                    //const run_link = b.addSystemCommand(&[_][]const u8{
-                    //    "avr-gcc", try std.mem.concat(b.allocator, u8, &[_][]const u8{"-mmcu=", obj.target.getCpuModel().name}),
-                    //    std.os.getenv("AVR_FLAGS").?, obj.getOutputPath(), "-o",
-                    //    try std.fs.path.join(b.allocator, &[_][]const u8{"zig-cache", try std.mem.concat(b.allocator, u8, &[_][]const u8{entry.name, ".elf"})})
-                    //});
-                    //run_link.step.dependOn(&obj.step);
+                    const run_link = b.addSystemCommand(&[_][]const u8{
+                        "avr-gcc",
+                        "-o",
+                        try std.fs.path.join(b.allocator, &[_][]const u8{
+                            "zig-out",
+                            try std.mem.concat(b.allocator, u8, &[_][]const u8{
+                                entry.name,
+                                ".elf",
+                            }),
+                        }),
+                        try std.fs.path.join(b.allocator, &[_][]const u8{
+                            "zig-out",
+                            obj.out_filename,
+                        }),
+                        std.os.getenv("AVR_FLAGS").?,
+                        try std.mem.concat(b.allocator, u8, &[_][]const u8{
+                            "-mmcu=",
+                            obj.target.getCpuModel().name,
+                        }),
+                    });
+                    run_link.step.dependOn(&obj.step);
 
-                    //b.default_step.dependOn(&run_link.step);
-                    b.default_step.dependOn(&obj.step);
+                    b.default_step.dependOn(&run_link.step);
                 },
                 else => {
                     const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
 
                     // add zbed
-                    zbed.addTo(b, exe, io_target);
+                    try zbed.addTo(b, exe, io_target);
 
                     exe.setTarget(target);
                     exe.setBuildMode(mode);
-
-                    exe.setOutputDir("zig-cache/");
+                    exe.use_stage1 = true;
 
                     b.default_step.dependOn(&exe.step);
                 },

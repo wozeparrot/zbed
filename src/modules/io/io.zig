@@ -83,10 +83,9 @@ pub const DigitalPin = struct {
 pub const millis = c.millis;
 
 /// initializes the io
-pub const init = c.io_init;
+pub const init = c.ioInit;
 
-// comptime import trickery
 /// chip utils
-const cutil = @import("../../cores/" ++ @import("build_options").io_target ++ "/util.zig");
+const cutil = @import("zbed_io_target").util;
 /// chip specific io
-pub const c = @import("../../cores/" ++ @import("build_options").io_target ++ "/modules/io/io.zig");
+pub const c = @import("zbed_io_target").modules.io;
