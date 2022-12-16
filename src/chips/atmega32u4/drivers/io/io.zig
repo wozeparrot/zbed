@@ -1,4 +1,4 @@
-const ioutil = @import("zbed").io.util;
+const ioutil = @import("zbed").drivers.io.util;
 const cutil = @import("../../util.zig");
 const util = @import("zbed").util;
 

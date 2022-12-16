@@ -1,6 +1,6 @@
 const std = @import("std");
 
-/// Super simple event loop
+/// Extremely simple single threaded event loop
 pub fn Loop(comptime SlotCount: usize) type {
     return struct {
         const Task = struct {
@@ -13,6 +13,7 @@ pub fn Loop(comptime SlotCount: usize) type {
 
         /// wait for a condition
         pub fn waitFor(ctx: ?*anyopaque, cond: *const fn (ctx: ?*anyopaque) bool) void {
+            // check if condition is already met
             if (cond.*(ctx)) return;
 
             suspend {
@@ -31,19 +32,19 @@ pub fn Loop(comptime SlotCount: usize) type {
 
         /// run event loop
         pub fn run() void {
-            while (true) {
-                var done = true;
+            var running = true;
+            while (running) {
+                running = false;
                 for (task_slots) |*task_slot| {
                     if (task_slot.*) |task| {
-                        done = false;
+                        running = true;
                         if (task.cond.*(task.ctx)) {
-                            var frame = task.frame;
+                            const frame = task.frame;
                             task_slot.* = null;
                             resume frame;
                         }
                     }
                 }
-                if (done) break;
             }
         }
     };

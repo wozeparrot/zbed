@@ -8,11 +8,11 @@ pub fn Pkg(comptime path: []const u8) type {
         };
 
         /// Adds zbed to a step
-        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep, io_target: []const u8) !void {
+        pub fn addTo(b: *std.build.Builder, step: *std.build.LibExeObjStep, chip: []const u8) !void {
             zbed.dependencies = &[_]std.build.Pkg{
                 std.build.Pkg{
-                    .name = "zbed_io_target",
-                    .source = .{ .path = try std.mem.join(b.allocator, "", &[_][]const u8{ path, "/src/cores/", io_target, "/core.zig" }) },
+                    .name = "zbed_chip",
+                    .source = .{ .path = try std.mem.join(b.allocator, "", &[_][]const u8{ path, "/src/chips/", chip, "/chip.zig" }) },
                     .dependencies = &[_]std.build.Pkg{
                         std.build.Pkg{
                             .name = "zbed",

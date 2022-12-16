@@ -1,7 +1,7 @@
 const std = @import("std");
 
 const zbed = @import("zbed");
-const io = zbed.io;
+const io = zbed.drivers.io;
 
 const EventLoop = zbed.event.Loop(64);
 

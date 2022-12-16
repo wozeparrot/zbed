@@ -5,6 +5,6 @@ const builtin = @import("builtin");
 pub const init = c.usbInit;
 
 /// chip utils
-const cutil = @import("zbed_io_target").util;
+const cutil = @import("zbed_chip").util;
 /// chip specific usb
-pub const c = @import("zbed_io_target").modules.usb;
+pub const c = @import("zbed_chip").drivers.usb;

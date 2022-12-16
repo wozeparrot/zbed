@@ -86,6 +86,6 @@ pub const millis = c.millis;
 pub const init = c.ioInit;
 
 /// chip utils
-const cutil = @import("zbed_io_target").util;
+const cutil = @import("zbed_chip").util;
 /// chip specific io
-pub const c = @import("zbed_io_target").modules.io;
+pub const c = @import("zbed_chip").drivers.io;
