@@ -1,4 +1,6 @@
-const ioutil = @import("zbed").drivers.io.util;
+const zbed = @import("zbed");
+const Pin = zbed.drivers.io.Pin;
+const ioutil = zbed.drivers.io.util;
 const cutil = @import("../../util.zig");
 const util = @import("zbed").util;
 
@@ -32,7 +34,7 @@ pub const F7 = 18;
 // status register
 pub const SREG = ioutil.mmio8(0x37);
 
-pub fn pinModeRegister(pin: u8) *volatile u8 {
+pub fn pinModeRegister(pin: Pin) *volatile u8 {
     switch (pin) {
         B0, B1, B2, B3, B4, B5, B6, B7 => return ioutil.mmio8(0x04 + 0x20),
         C6, C7 => return ioutil.mmio8(0x07 + 0x20),
@@ -43,7 +45,7 @@ pub fn pinModeRegister(pin: u8) *volatile u8 {
     }
 }
 
-pub fn pinPortRegister(pin: u8) *volatile u8 {
+pub fn pinPortRegister(pin: Pin) *volatile u8 {
     switch (pin) {
         B0, B1, B2, B3, B4, B5, B6, B7 => return ioutil.mmio8(0x05 + 0x20),
         C6, C7 => return ioutil.mmio8(0x08 + 0x20),
@@ -54,7 +56,7 @@ pub fn pinPortRegister(pin: u8) *volatile u8 {
     }
 }
 
-pub fn pinPinRegister(pin: u8) *volatile u8 {
+pub fn pinPinRegister(pin: Pin) *volatile u8 {
     switch (pin) {
         B0, B1, B2, B3, B4, B5, B6, B7 => return ioutil.mmio8(0x03 + 0x20),
         C6, C7 => return ioutil.mmio8(0x06 + 0x20),
@@ -65,7 +67,7 @@ pub fn pinPinRegister(pin: u8) *volatile u8 {
     }
 }
 
-pub fn pinMask(pin: u8) u8 {
+pub fn pinMask(pin: Pin) u8 {
     switch (pin) {
         B0, D0, F0 => return 0b00000001,
         B1, D1, F1 => return 0b00000010,
@@ -78,6 +80,9 @@ pub fn pinMask(pin: u8) u8 {
         else => unreachable, // invalid pin
     }
 }
+
+// Implementations of zbed io
+pub const DigitalPin = @import("DigitalPin.zig");
 
 // timer0
 var timer0_overflow_count: u32 = 0;
@@ -109,7 +114,7 @@ export fn __vector_23() callconv(.Signal) void {
 
 /// inits io api:
 /// timer0
-pub fn ioInit() void {
+pub fn init() void {
     cutil.enterCritical();
 
     ioutil.mmio8(0x25 + 0x20).* = 0b00000011;

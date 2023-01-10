@@ -3,24 +3,38 @@ const builtin = @import("builtin");
 
 pub const util = @import("util.zig");
 
-/// a DigitalPin, similar to arduino's digitalWrite and digitalRead
+/// A Pin, just the zbed definition of a pin
+/// Currently a u8 as we don't need support for more than 256 pins yet
+pub const Pin = u8;
+
+/// A DigitalPin, similar to arduino's digitalWrite and digitalRead
+/// Chips implement the actual definitions of this interface
 pub const DigitalPin = struct {
     /// DigitalPin mode, similar to arduino's pinMode
     pub const Mode = enum {
         in,
         out,
         in_pullup,
+        in_pulldown,
     };
 
-    pin: u8,
+    pin: Pin,
     m: Mode,
 
     /// returns a DigitalPin object
-    pub fn init(pin: u8, m: Mode) DigitalPin {
+    pub fn new(pin: Pin, m: Mode) DigitalPin {
         return DigitalPin{
             .pin = pin,
             .m = m,
         };
+    }
+
+    pub fn init(self: *DigitalPin) void {
+        cutil.enterCritical();
+
+        c.DigitalPin.mode(self.pin, self.m);
+
+        cutil.exitCritical();
     }
 
     /// sets the pin mode
@@ -29,22 +43,7 @@ pub const DigitalPin = struct {
 
         cutil.enterCritical();
 
-        const ddr = c.pinModeRegister(self.pin);
-        const port = c.pinPortRegister(self.pin);
-        const mask = c.pinMask(self.pin);
-        switch (m) {
-            .in => {
-                ddr.* &= ~mask;
-                port.* &= ~mask;
-            },
-            .in_pullup => {
-                ddr.* &= ~mask;
-                port |= mask;
-            },
-            .out => {
-                ddr.* |= mask;
-            },
-        }
+        c.DigitalPin.mode(self.pin, m);
 
         cutil.exitCritical();
     }
@@ -53,27 +52,21 @@ pub const DigitalPin = struct {
     pub fn write(self: *DigitalPin, state: bool) void {
         cutil.enterCritical();
 
-        const port = c.pinPortRegister(self.pin);
-        const mask = c.pinMask(self.pin);
-        if (state) port.* |= mask else port.* &= ~mask;
+        c.DigitalPin.write(self.pin, state);
 
         cutil.exitCritical();
     }
 
     /// reads from the pin
     pub fn read(self: *DigitalPin) bool {
-        const pin = c.pinPinRegister(self.pin);
-        const mask = c.pinMask(self.pin);
-        return if (pin.* & mask == 1) true else false;
+        return c.DigitalPin.read(self.pin);
     }
 
     /// xors the pin
     pub fn toggle(self: *DigitalPin) void {
         cutil.enterCritical();
 
-        const port = c.pinPortRegister(self.pin);
-        const mask = c.pinMask(self.pin);
-        port.* ^= mask;
+        c.DigitalPin.toggle(self.pin);
 
         cutil.exitCritical();
     }

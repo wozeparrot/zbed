@@ -1,6 +1,11 @@
 const std = @import("std");
 
 pub fn Pkg(comptime path: []const u8) type {
+    const chip_build_fns = std.ComptimeStringMap(fn (*std.build.Builder, *std.build.LibExeObjStep) anyerror!void, .{
+        .{ "atmega32u4", @import("src/chips/atmega32u4/build.zig").build(path) },
+        .{ "gd32f310", @import("src/chips/gd32f310/build.zig").build(path) },
+    });
+
     return struct {
         var zbed = std.build.Pkg{
             .name = "zbed",
@@ -23,6 +28,9 @@ pub fn Pkg(comptime path: []const u8) type {
             };
 
             step.addPackage(zbed);
+
+            // Add the chip-specific build function
+            try chip_build_fns.get(chip).?(b, step);
         }
     };
 }

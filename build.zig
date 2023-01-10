@@ -24,11 +24,10 @@ pub fn build(b: *Builder) !void {
                     .avr => {
                         const obj = b.addObject(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
 
+                        obj.setBuildMode(mode);
+
                         // add zbed
                         try zbed.addTo(b, obj, chip);
-
-                        obj.setTarget(target);
-                        obj.setBuildMode(mode);
 
                         obj.setOutputDir("zig-out/");
 
@@ -60,11 +59,10 @@ pub fn build(b: *Builder) !void {
                     else => {
                         const exe = b.addExecutable(try b.allocator.dupe(u8, entry.name), try std.fs.path.join(b.allocator, &[_][]const u8{ "examples", entry.name, "main.zig" }));
 
+                        exe.setBuildMode(mode);
+
                         // add zbed
                         try zbed.addTo(b, exe, chip);
-
-                        exe.setTarget(target);
-                        exe.setBuildMode(mode);
 
                         exe.setOutputDir("zig-out/");
 
