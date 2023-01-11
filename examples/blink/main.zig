@@ -6,7 +6,7 @@ const io = zbed.drivers.io;
 const EventLoop = zbed.event.Loop(64);
 
 // create a pin
-var pin = io.DigitalPin.new(io.c.C6, .out);
+var pin: io.DigitalPin = undefined;
 
 // main
 pub export fn main() void {
@@ -14,10 +14,15 @@ pub export fn main() void {
     zbed.init();
 
     // init the pin
-    pin.init();
+    pin = io.DigitalPin.init(io.c.C6, .out);
 
     var led_frame = async runLed();
     nosuspend await led_frame;
+}
+
+export fn _start() noreturn {
+    main();
+    zbed.util.hang();
 }
 
 fn runLed() void {

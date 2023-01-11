@@ -21,20 +21,16 @@ pub const DigitalPin = struct {
     pin: Pin,
     m: Mode,
 
-    /// returns a DigitalPin object
-    pub fn new(pin: Pin, m: Mode) DigitalPin {
+    /// returns a DigitalPin object and initializes the pin
+    pub fn init(pin: Pin, m: Mode) DigitalPin {
+        cutil.enterCritical();
+        c.DigitalPin.mode(pin, m);
+        cutil.exitCritical();
+
         return DigitalPin{
             .pin = pin,
             .m = m,
         };
-    }
-
-    pub fn init(self: *DigitalPin) void {
-        cutil.enterCritical();
-
-        c.DigitalPin.mode(self.pin, self.m);
-
-        cutil.exitCritical();
     }
 
     /// sets the pin mode
