@@ -4,6 +4,10 @@ const DigitalPin = zbed.drivers.io.DigitalPin;
 
 const io = @import("io.zig");
 
+pub fn init(pin: Pin, m: DigitalPin.Mode) void {
+    mode(pin, m);
+}
+
 /// sets the pin mode
 pub fn mode(pin: Pin, m: DigitalPin.Mode) void {
     const ddr = io.pinModeRegister(pin);
