@@ -22,3 +22,10 @@ pub fn init() void {
 
     std.mem.copy(u8, data_start[0..data_len], data_src[0..data_len]);
 }
+
+export fn Null_Handler() void {
+    return;
+}
+export fn Loop_Handler() noreturn {
+    @import("zbed").util.hang();
+}

@@ -56,6 +56,10 @@ pub fn Pkg(comptime path: []const u8) type {
                             .name = "zbed",
                             .source = .{ .path = path ++ "/src/zbed.zig" },
                         },
+                        .{
+                            .name = "zbed_chip",
+                            .source = .{ .path = try std.fs.path.join(b.allocator, &[_][]const u8{ path, "/src/chips/", chip, "/chip.zig" }) },
+                        },
                     },
                 },
             };

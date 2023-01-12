@@ -1,13 +1,14 @@
 const std = @import("std");
 
 const zbed = @import("zbed");
-const io = zbed.drivers.io;
+const ELi = zbed.ELi;
+
 const usb = zbed.drivers.usb;
 
-// init a pin
-var pin = io.DigitalPin.init(io.c.C6, .out);
-
 // main
-export fn main() void {
+pub fn main() void {
     usb.init();
 }
+
+// override panic with the zbed panic handler
+pub const panic = zbed.panic;

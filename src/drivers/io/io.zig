@@ -45,7 +45,7 @@ pub const DigitalPin = struct {
     }
 
     /// writes `state` to the pin
-    pub fn write(self: *DigitalPin, state: bool) void {
+    pub fn write(self: *const DigitalPin, state: bool) void {
         cutil.enterCritical();
 
         c.DigitalPin.write(self.pin, state);
@@ -54,12 +54,12 @@ pub const DigitalPin = struct {
     }
 
     /// reads from the pin
-    pub fn read(self: *DigitalPin) bool {
+    pub fn read(self: *const DigitalPin) bool {
         return c.DigitalPin.read(self.pin);
     }
 
     /// xors the pin
-    pub fn toggle(self: *DigitalPin) void {
+    pub fn toggle(self: *const DigitalPin) void {
         cutil.enterCritical();
 
         c.DigitalPin.toggle(self.pin);
@@ -68,11 +68,8 @@ pub const DigitalPin = struct {
     }
 };
 
-/// returns milliseconds since start
-pub const millis = c.millis;
-
 /// initializes the io
-pub const init = c.ioInit;
+pub const init = c.init;
 
 /// chip utils
 const cutil = @import("zbed_chip").util;

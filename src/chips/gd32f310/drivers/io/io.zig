@@ -99,16 +99,5 @@ pub fn pinPort(pin: Pin) u32 {
 // Implementations of zbed io
 pub const DigitalPin = @import("DigitalPin.zig");
 
-pub fn millis() u32 {
-    return 0;
-}
-
 /// inits io api:
-/// gpio reset
-pub fn init() void {
-    ref.gpio_deinit(ref.GPIOA);
-    ref.gpio_deinit(ref.GPIOB);
-    ref.gpio_deinit(ref.GPIOC);
-    ref.gpio_deinit(ref.GPIOD);
-    ref.gpio_deinit(ref.GPIOF);
-}
+pub fn init() void {}
