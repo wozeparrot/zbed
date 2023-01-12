@@ -27,4 +27,5 @@ fn runLed(pin: io.DigitalPin) void {
 }
 
 // override panic with the zbed panic handler
+// this also initializes zbed by evaluting all the comptime logic
 pub const panic = zbed.panic;

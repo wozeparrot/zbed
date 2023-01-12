@@ -6,6 +6,14 @@ const io = @import("io.zig");
 
 const ref = @import("../ref.zig");
 
+pub fn init(pin: Pin, m: DigitalPin.Mode) void {
+    const ppin = io.pinPin(pin);
+    const pport = io.pinPort(pin);
+    ref.rcu_periph_clock_enable(pport);
+    mode(pin, m);
+    ref.gpio_output_options_set(pport, ref.GPIO_OTYPE_PP, ref.GPIO_OSPEED_10MHZ, ppin);
+}
+
 /// sets the pin mode
 pub fn mode(pin: Pin, m: DigitalPin.Mode) void {
     const ppin = io.pinPin(pin);

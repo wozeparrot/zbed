@@ -24,7 +24,9 @@ pub const DigitalPin = struct {
     /// returns a DigitalPin object and initializes the pin
     pub fn init(pin: Pin, m: Mode) DigitalPin {
         cutil.enterCritical();
-        c.DigitalPin.mode(pin, m);
+
+        c.DigitalPin.init(pin, m);
+
         cutil.exitCritical();
 
         return DigitalPin{
