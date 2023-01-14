@@ -83,5 +83,3 @@ pub fn pinMask(pin: Pin) u8 {
 
 // Implementations of zbed io
 pub const DigitalPin = @import("DigitalPin.zig");
-
-pub fn init() void {}

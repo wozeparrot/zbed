@@ -6,15 +6,12 @@ const ELi = zbed.ELi;
 const io = zbed.drivers.io;
 
 // main
-pub fn main() void {
-    // initialize io
-    io.init();
-
+pub fn main() callconv(.Async) void {
     // init the pin
     const pin = io.DigitalPin.init(io.c.C6, .out);
 
     var led_frame = async runLed(pin);
-    nosuspend await led_frame;
+    await led_frame;
 }
 
 fn runLed(pin: io.DigitalPin) void {

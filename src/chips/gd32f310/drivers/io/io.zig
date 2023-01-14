@@ -96,8 +96,16 @@ pub fn pinPort(pin: Pin) u32 {
     };
 }
 
+pub fn pinClock(pin: Pin) u32 {
+    return switch (pin) {
+        A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15 => ref.RCU_GPIOA,
+        B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15 => ref.RCU_GPIOB,
+        C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12, C13, C14, C15 => ref.RCU_GPIOC,
+        D2 => ref.RCU_GPIOD,
+        F0, F1, F4, F5, F6, F7 => ref.RCU_GPIOF,
+        else => unreachable, // invalid pin
+    };
+}
+
 // Implementations of zbed io
 pub const DigitalPin = @import("DigitalPin.zig");
-
-/// inits io api:
-pub fn init() void {}

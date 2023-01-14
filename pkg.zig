@@ -70,6 +70,7 @@ pub fn Pkg(comptime path: []const u8) type {
             step.strip = false;
             step.single_threaded = true;
             step.bundle_compiler_rt = true;
+            step.link_gc_sections = true;
 
             // Add the chip-specific build function
             try chip_map.get(chip).?.build_func(b, step);

@@ -44,12 +44,24 @@ pub export fn _start() noreturn {
 export fn zbed_main() void {
     if (!@hasDecl(@import("root"), "main")) @compileError("No main function found");
 
-    if (@typeInfo(@typeInfo(@TypeOf(@import("root").main)).Fn.return_type.?) == .ErrorUnion) {
-        @import("root").main() catch |err| {
-            @panic(@errorName(err));
-        };
+    if (@typeInfo(@TypeOf(@import("root").main)).Fn.calling_convention == .Async) {
+        if (@typeInfo(@typeInfo(@TypeOf(@import("root").main)).Fn.return_type.?) == .ErrorUnion) {
+            var frame = async @import("root").main();
+            nosuspend await frame catch |err| {
+                @panic(@errorName(err));
+            };
+        } else {
+            var frame = async @import("root").main();
+            nosuspend await frame;
+        }
     } else {
-        @import("root").main();
+        if (@typeInfo(@typeInfo(@TypeOf(@import("root").main)).Fn.return_type.?) == .ErrorUnion) {
+            @import("root").main() catch |err| {
+                @panic(@errorName(err));
+            };
+        } else {
+            @import("root").main();
+        }
     }
 }
 

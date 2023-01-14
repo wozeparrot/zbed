@@ -70,9 +70,6 @@ pub const DigitalPin = struct {
     }
 };
 
-/// initializes the io
-pub const init = c.init;
-
 /// chip utils
 const cutil = @import("zbed_chip").util;
 /// chip specific io
