@@ -17,9 +17,9 @@ pub fn main() callconv(.Async) void {
 fn runLed(pin: io.DigitalPin) void {
     while (true) {
         pin.write(true);
-        ELi.sleep(100);
+        ELi.sleep(1000);
         pin.write(false);
-        ELi.sleep(100);
+        ELi.sleep(1000);
     }
 }
 
