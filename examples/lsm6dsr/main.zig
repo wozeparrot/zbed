@@ -17,7 +17,7 @@ pub fn main() callconv(.Async) void {
     var device = i2c.SlaveDevice.init(&bus_master, 0x6a);
 
     // setup serial
-    var serial = uart.Uart.init(uart.c.UART0, io.c.B7, io.c.B6, .{ .baud_rate = 115200 });
+    var serial = uart.Uart.init(uart.c.UART1, io.c.A3, io.c.A2, .{ .baud_rate = 115200 });
     var writer = serial.writer();
     try writer.print("Hello, world!", .{});
 

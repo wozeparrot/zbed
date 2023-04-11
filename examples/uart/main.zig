@@ -12,7 +12,7 @@ pub fn main() callconv(.Async) !void {
     const pin = io.DigitalPin.init(io.c.C6, .out);
     var led_frame = async runLed(pin);
 
-    var serial = uart.Uart.init(uart.c.UART0, io.c.A7, io.c.A6, .{ .baud_rate = 115200 });
+    var serial = uart.Uart.init(uart.c.UART1, io.c.A3, io.c.A2, .{ .baud_rate = 115200 });
     var writer = serial.writer();
     try writer.print("Hello, world!", .{});
 
