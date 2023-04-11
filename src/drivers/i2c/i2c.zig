@@ -100,30 +100,30 @@ pub const BusMaster = struct {
     }
 };
 
-pub const Device = struct {
+pub const SlaveDevice = struct {
     bus: *BusMaster,
     address: u7,
 
-    pub fn init(bus: *BusMaster, address: u7) Device {
-        return Device{
+    pub fn init(bus: *BusMaster, address: u7) SlaveDevice {
+        return SlaveDevice{
             .bus = bus,
             .address = address,
         };
     }
 
-    pub fn writeRegisterByte(self: *Device, register: u8, data: u8) void {
+    pub fn writeRegisterByte(self: *SlaveDevice, register: u8, data: u8) void {
         self.bus.beginWrite();
         self.bus.write(self.address, &[_]u8{ register, data });
         self.bus.end();
     }
 
-    pub fn writeRegister(self: *Device, register: u8, data: []const u8) void {
+    pub fn writeRegister(self: *SlaveDevice, register: u8, data: []const u8) void {
         self.bus.beginWrite();
         self.bus.writeMulti(self.address, &[_][]const u8{ &[_]u8{register}, data });
         self.bus.end();
     }
 
-    pub fn readRegisterByte(self: *Device, register: u8) u8 {
+    pub fn readRegisterByte(self: *SlaveDevice, register: u8) u8 {
         var data: [1]u8 = undefined;
         self.bus.beginWrite();
         self.bus.write(self.address, &[_]u8{1 << 7 | register});
@@ -133,7 +133,7 @@ pub const Device = struct {
         return data[0];
     }
 
-    pub fn readRegister(self: *Device, register: u8, buffer: []u8) void {
+    pub fn readRegister(self: *SlaveDevice, register: u8, buffer: []u8) void {
         self.bus.beginWrite();
         self.bus.write(self.address, &[_]u8{1 << 7 | register});
         self.bus.beginRead();
