@@ -14,7 +14,7 @@ pub fn millis() u32 {
 
 pub fn init() void {
     if (ref.SysTick_Config(ref.SystemCoreClock / 1000) != 0) {
-        util.hang();
+        util.hang(); // failed to initialize systick
     }
 
     ref.NVIC_SetPriority(ref.SysTick_IRQn, 0);
