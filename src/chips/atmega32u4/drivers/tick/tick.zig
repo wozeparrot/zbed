@@ -9,13 +9,7 @@ var timer0_fract: u32 = 0;
 
 /// returns the number of milliseconds that passed since start
 pub fn millis() u32 {
-    cutil.enterCritical();
-
-    const m = timer0_millis;
-
-    cutil.exitCritical();
-
-    return m;
+    return timer0_millis;
 }
 
 // timer0 overflow interrupt
