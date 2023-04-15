@@ -63,7 +63,7 @@ pub const F5 = 52;
 pub const F6 = 53;
 pub const F7 = 54;
 
-pub fn pinPin(pin: Pin) u32 {
+pub inline fn pinPin(pin: Pin) u32 {
     return switch (pin) {
         A0, B0, C0, F0 => ref.GPIO_PIN_0,
         A1, B1, C1, F1 => ref.GPIO_PIN_1,
@@ -85,7 +85,7 @@ pub fn pinPin(pin: Pin) u32 {
     };
 }
 
-pub fn pinPort(pin: Pin) u32 {
+pub inline fn pinPort(pin: Pin) u32 {
     return switch (pin) {
         A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15 => ref.GPIOA,
         B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15 => ref.GPIOB,
@@ -96,7 +96,7 @@ pub fn pinPort(pin: Pin) u32 {
     };
 }
 
-pub fn pinClock(pin: Pin) u32 {
+pub inline fn pinClock(pin: Pin) u32 {
     return switch (pin) {
         A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15 => ref.RCU_GPIOA,
         B0, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15 => ref.RCU_GPIOB,
