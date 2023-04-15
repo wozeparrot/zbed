@@ -8,7 +8,7 @@ const i2c = zbed.drivers.i2c;
 const uart = zbed.drivers.uart;
 
 // main
-pub fn main() callconv(.Async) void {
+pub fn main() callconv(.Async) !void {
     // blink led as well
     const pin = io.DigitalPin.init(io.c.C6, .out);
     var led_frame = async runLed(pin);
@@ -19,15 +19,34 @@ pub fn main() callconv(.Async) void {
     // setup serial
     var serial = uart.Uart.init(uart.c.UART1, io.c.A3, io.c.A2, .{ .baud_rate = 115200 });
     var writer = serial.writer();
-    try writer.print("Hello, world!", .{});
+    try writer.writeAll("LSM6DSR example started\n");
 
     // reset device
     device.writeRegisterByte(0x12, 0b00000001);
 
     // read who am i
-    std.debug.assert(device.readRegisterByte(0x0f) == 0x6b);
+    try writer.print("LSM6DSR: {x}\n", .{device.readRegisterByte(0x0f)});
+
+    var temp_frame = async readTemperature(&device, writer);
 
     await led_frame;
+    try await temp_frame;
+}
+
+fn readTemperature(device: *i2c.SlaveDevice, writer: anytype) !void {
+    while (true) {
+        var temp: i16 = undefined;
+        // read low byte
+        temp = device.readRegisterByte(0x20);
+        // read high byte
+        temp |= device.readRegisterByte(0x21) << 7;
+
+        // print to serial
+        try writer.print("Temperature: {}\n", .{temp});
+
+        // wait a bit
+        ELi.sleep(1000);
+    }
 }
 
 fn runLed(pin: io.DigitalPin) void {
