@@ -20,7 +20,7 @@
       in {
         devShell = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            zig.packages."${system}".default
+            zig.packages."${system}"."0.10.1"
 
             # avr
             pkgsCross.avr.buildPackages.gcc
